@@ -94,10 +94,11 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       enum: ['male', 'female', 'ohters'],
       required: true,
     },
-    dateOfBirth: String,
+    dateOfBirth: Date,
     email: {
       type: String,
       required: true,
+      unique: true,
       validate: {
         validator: (value: string) => validator.isEmail(value),
         message: '{VALUE} is not a valid email',
@@ -130,15 +131,21 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: true,
     },
     profileImage: String,
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      ref: 'AcademicSemester',
+    },
     isDeleted: {
       type: Boolean,
       default: false,
     },
   },
+
   {
     toJSON: {
       virtuals: true,
     },
+    timestamps: true,
   }
 );
 

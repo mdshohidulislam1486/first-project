@@ -25,7 +25,7 @@ export type TStudent = {
   email: string;
   gender: 'male' | 'female' | 'others';
   avatar: string;
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   password: string;
   cotactNo: string;
   emergencyContact: string;
@@ -35,6 +35,7 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImage?: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
   // Use `Types.ObjectId` in document interface...
 };
