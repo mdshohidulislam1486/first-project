@@ -36,9 +36,24 @@ const deleteSingleStudents = cathcAsync(async (req, res) => {
     data: result,
   });
 });
+const updateSingleStudents = cathcAsync(async (req, res) => {
+  const { studentId } = req.params;
+  const { student } = req.body;
+  const result = await StudentServices.updateSingleStudentsIntoDb(
+    studentId,
+    student
+  );
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: 'Students updated  successfully',
+    data: result,
+  });
+});
 
 export const StudentControllers = {
   getAllStudents,
+  updateSingleStudents,
   getSingleStudents,
   deleteSingleStudents,
 };
