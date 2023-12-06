@@ -7,7 +7,7 @@ import cathcAsync from '../../utils/catchAsync';
 // import studentSchema from './student.joi.validation';
 
 const getAllStudents = cathcAsync(async (req, res) => {
-  const result = await StudentServices.getAllStudentsFromDb();
+  const result = await StudentServices.getAllStudentsFromDb(req.query);
   sendResponse(res, {
     success: true,
     statusCode: httpStatus.OK,

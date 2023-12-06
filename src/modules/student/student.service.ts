@@ -4,17 +4,85 @@ import { AppError } from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../user/user.model';
 import { TStudent } from './student.interface';
-import { object } from 'joi';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableField } from './student.const';
 
-const getAllStudentsFromDb = async () => {
-  const result = await Student.mfind()
+const getAllStudentsFromDb = async (query: Record<string, unknown>) => {
+  // const queryObject = { ...query }
+
+  /*  const studentSearchableField = ['email', 'name.firstName', 'presentAddress'];
+  let searchTerm = '';
+  if (query?.searchTerm) {
+    searchTerm = query.searchTerm as string;
+  }
+
+  const searchQuery = Student.find({
+    $or: studentSearchableField.map((field) => ({
+      [field]: { $regex: searchTerm, $options: 'i' },
+    })),
+  });
+ */
+  /*   const fitlerQuery = searchQuery
+    .find(queryObject)
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: {
         path: 'academicFauclty',
       },
-    });
+    }); */
+
+  /*  let sort = '-createdAt';
+  if (query.sort) {
+    sort = query.sort as string;
+  } */
+
+  /*   const sortQuery = fitlerQuery.sort(sort);
+
+  let page = 1;
+  let limit = 1;
+  let skip = 0;
+
+  if (query.limit) {
+    limit = Number(query.limit);
+  }
+  if (query.page) {
+    page = Number(query.page);
+    skip = (page - 1) * limit;
+  }
+
+  const paginateQuery = sortQuery.skip(skip);
+  const limitQuery = paginateQuery.limit(limit);
+  let fields = '-__v'; */
+  // fieds will come with comm as below
+  //   { fields: 'name,email' }
+  /*  if (query.fields) {
+    fields = (query.fields as string).split(',').join(' ');
+    console.log(fields);
+  }
+
+  const fieldQuery = await limitQuery.select(fields);
+
+  return fieldQuery; */
+
+  // this does'nt need to nest as it would not be more than 3-4
+  const studentQuery = new QueryBuilder(
+    Student.find()
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFauclty',
+        },
+      }),
+    query
+  )
+    .search(studentSearchableField)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+  const result = await studentQuery.queryModel;
   return result;
 };
 const getSingleStudentsFromDb = async (id: string) => {
