@@ -1,34 +1,32 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { StudentRoutes } from './modules/student/student.route';
-import { usersRoutes } from './modules/user/user.route';
-import globalerrorHandler from './middlware/globalErrorHandler';
-import notFound from './middlware/notFound';
-import router from './routes';
+import express, { Application, Request, Response } from 'express';
+import globalErrorHandler from './app/middlewares/globalErrorhandler';
+import notFound from './app/middlewares/notFound';
+import router from './app/routes';
 
 const app: Application = express();
 
-//parser
+//parsers
 app.use(express.json());
 app.use(cors());
 
-const test = (req: Request, res: Response) => {
-  //   Promise.reject();
+// application routes
+app.use('/api/v1', router);
+
+const test = async (req: Request, res: Response) => {
   const a = 10;
   res.send(a);
 };
+
 app.get('/', test);
 
-// application route
-app.use('/api/v1', router);
+app.use(globalErrorHandler);
 
-console.log(process.cwd());
-
-app.use(globalerrorHandler);
-// not found route
+//Not Found
 app.use(notFound);
 
 export default app;
