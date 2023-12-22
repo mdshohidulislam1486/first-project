@@ -1,52 +1,59 @@
 import { Schema, model } from 'mongoose';
 import {
   TCourse,
-  TCourseFaculty,
+  TCoursefaculty,
   TPreRequisiteCourses,
 } from './course.interface';
-import { boolean } from 'zod';
 
-const preRequisiteCoursesScheam = new Schema<TPreRequisiteCourses>({
-  course: {
-    type: Schema.ObjectId,
-    ref: 'Course',
+const preRequisiteCoursesSchema = new Schema<TPreRequisiteCourses>(
+  {
+    course: {
+      type: Schema.Types.ObjectId,
+      ref: 'Course',
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
+  {
+    _id: false,
+  },
+);
+
+const courseSchema = new Schema<TCourse>({
+  title: {
+    type: String,
+    unique: true,
+    trim: true,
+    required: true,
+  },
+  prefix: {
+    type: String,
+    trim: true,
+    required: true,
+  },
+  code: {
+    type: Number,
+    trim: true,
+    required: true,
+  },
+  credits: {
+    type: Number,
+    trim: true,
+    required: true,
+  },
+  preRequisiteCourses: [preRequisiteCoursesSchema],
   isDeleted: {
     type: Boolean,
     default: false,
   },
 });
 
-const courSchema = new Schema<TCourse>({
-  title: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-  },
-  prefix: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  code: {
-    type: Number,
-    required: true,
-    trim: true,
-  },
-  credits: {
-    type: Number,
-    required: true,
-    trim: true,
-  },
-  preRequisiteCourse: [preRequisiteCoursesScheam],
-  isDeleted: Boolean,
-});
+export const Course = model<TCourse>('Course', courseSchema);
 
-export const Course = model<TCourse>('Course', courSchema);
-
-const courseFacultyScheam = new Schema<TCourseFaculty>({
-  courseId: {
+const courseFacultySchema = new Schema<TCoursefaculty>({
+  course: {
     type: Schema.Types.ObjectId,
     ref: 'Course',
     unique: true,
@@ -59,7 +66,7 @@ const courseFacultyScheam = new Schema<TCourseFaculty>({
   ],
 });
 
-export const CourseFaculty = model<TCourseFaculty>(
+export const CourseFaculty = model<TCoursefaculty>(
   'CourseFaculty',
-  courseFacultyScheam
+  courseFacultySchema,
 );

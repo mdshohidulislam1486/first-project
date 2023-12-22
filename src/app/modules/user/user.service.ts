@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import config from '../../config';
 import AppError from '../../errors/AppError';
+import { TAdmin } from '../Admin/admin.interface';
 import { Admin } from '../Admin/admin.model';
 import { TFaculty } from '../Faculty/faculty.interface';
 import { Faculty } from '../Faculty/faculty.model';
@@ -10,7 +11,7 @@ import { AcademicDepartment } from '../academicDepartment/academicDepartment.mod
 import { TStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { AcademicSemester } from './../academicSemester/academicSemester.model';
-import { TUser } from './user.interface';
+import { IUser } from './user.interface';
 import { User } from './user.model';
 import {
   generateAdminId,
@@ -20,7 +21,7 @@ import {
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
-  const userData: Partial<TUser> = {};
+  const userData: Partial<IUser> = {};
 
   //if password is not given , use deafult password
   userData.password = password || (config.default_password as string);
@@ -36,7 +37,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   if (!admissionSemester) {
     throw new AppError(400, 'Admission semester not found');
   }
-  
+
   const session = await mongoose.startSession();
 
   try {
@@ -76,7 +77,7 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
 
 const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   // create a user object
-  const userData: Partial<TUser> = {};
+  const userData: Partial<IUser> = {};
 
   //if password is not given , use deafult password
   userData.password = password || (config.default_password as string);
@@ -130,9 +131,9 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   }
 };
 
-const createAdminIntoDB = async (password: string, payload: TFaculty) => {
+const createAdminIntoDB = async (password: string, payload: TAdmin) => {
   // create a user object
-  const userData: Partial<TUser> = {};
+  const userData: Partial<IUser> = {};
 
   //if password is not given , use deafult password
   userData.password = password || (config.default_password as string);
@@ -148,7 +149,7 @@ const createAdminIntoDB = async (password: string, payload: TFaculty) => {
     userData.id = await generateAdminId();
 
     // create a user (transaction-1)
-    const newUser = await User.create([userData], { session }); 
+    const newUser = await User.create([userData], { session });
 
     //create a admin
     if (!newUser.length) {
