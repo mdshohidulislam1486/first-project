@@ -110,6 +110,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
   const studentQuery = new QueryBuilder(
     Student.find()
+      .populate('user')
       .populate('admissionSemester')
       .populate({
         path: 'academicDepartment',
@@ -117,7 +118,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
           path: 'academicFaculty',
         },
       }),
-    query,
+    query
   )
     .search(studentSearchableFields)
     .filter()
@@ -193,7 +194,7 @@ const deleteStudentFromDB = async (id: string) => {
     const deletedStudent = await Student.findByIdAndUpdate(
       id,
       { isDeleted: true },
-      { new: true, session },
+      { new: true, session }
     );
 
     if (!deletedStudent) {
@@ -206,7 +207,7 @@ const deleteStudentFromDB = async (id: string) => {
     const deletedUser = await User.findByIdAndUpdate(
       userId,
       { isDeleted: true },
-      { new: true, session },
+      { new: true, session }
     );
 
     if (!deletedUser) {
